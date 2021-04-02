@@ -40,15 +40,18 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     curl = "c:\\windows\\system32\\curl.exe";
-    hosts.append(new CurlHost(this, "bayfiles", "https://api.bayfiles.com/upload?token=4f9a3566f6777bee"));
+    hosts.append(new CurlHost(this, "bayfiles", "https://api.bayfiles.com/upload"));
+    hosts.append(new CurlHost(this, "bayfiles keyed", "https://api.bayfiles.com/upload?token=4f9a3566f6777bee"));
 //    hosts.append(new CurlHost("bayfiles", "https://api.bayfiles.com/upload?token=4f9a3566f6777bee"));
-    hosts.append(new CurlHost(this, "anonfiles keyed", "https://api.anonfiles.com/upload?token=65919e88def53ba5"));
     hosts.append(new CurlHost(this, "anonfiles", "https://api.anonfiles.com/upload"));
-//    hosts.append(new Host("anonfiles", "https://api.fileleaks.com/upload?token=72083f7f2aefa10a"));
+    hosts.append(new CurlHost(this, "anonfiles keyed", "https://api.anonfiles.com/upload?token=65919e88def53ba5"));
+    hosts.append(new CurlHost(this, "fileleaks", "https://api.fileleaks.com/upload"));
+    hosts.append(new CurlHost(this, "fileleaks keyed", "https://api.fileleaks.com/upload?token=72083f7f2aefa10a"));
 //    hosts.append(new Host("anonfiles", "https://tusfiles.com/api/upload/server?key=31449212xdl45x5xip46qs7"));
-//    hosts.append(new Host("anonfiles", "https://tusfiles.com/api/upload/server"));
-//    hosts.append(new Host("anonfiles", "https://tusfiles.com/api/upload?key=31449212xdl45x5xip46qs7"));
-//    hosts.append(new Host("anonfiles", "https://api.load.to/upload"));
+    hosts.append(new TusHost(this,"tusfiles", "https://wwcloud.tusfiles.com/cgi-bin/upload.cgi"));
+//    hosts.append(new CurlHost(this,"1fichier", "https://api.1fichier.com/v1/upload/get_upload_server.cgi"));
+    hosts.append(new SolidHost(this,"solidfiles", "https://www.solidfiles.com/upload/process/0/"));
+    hosts.append(new CurlHost(this, "iobb", "http://intel.iobb.net/upload.cgi"));
 
 }
 
@@ -84,6 +87,17 @@ void MainWindow::fillTaskList()
     for (int i =0; i< hosts.count(); i++)
         taskList << hosts[i]->tasks;
     showTasks();
+}
+
+void MainWindow::removeTask(int itask)
+{
+    Task* task = taskList[itask];
+    for (int i = 0; i< hosts.count(); i++)
+        if (hosts[i]->removeTask(task))
+        {
+            fillTaskList();
+            return;
+        }
 }
 
 void MainWindow::addFiles()
@@ -130,6 +144,11 @@ void MainWindow::showTasks()
 {
     taskTable->taskModel()->refresh();
 
+}
+
+bool MainWindow::sendViaTor() const
+{
+    return ui->torCheckBox->isChecked();
 }
 
 

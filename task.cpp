@@ -19,8 +19,31 @@ Task::Task(Host *_host, QFileInfo *_file) : host(_host), finfo(_file)
 void Task::run()
 {
     qDebug() << "Started task " << host->name <<  finfo->absoluteFilePath();
-    //host->send(finfo);
-    state = starting;
+    int npr =-1;
+    for (int i=0; i< host->tasks.count(); i++)
+        if (host->tasks[i] == this)
+        {
+            npr = i;
+            break;
+        }
+    if (npr != -1)
+    {
+        host->startTask(npr);
+        state = starting;
+        changed();
+    }
+}
+
+void Task::stop()
+{
+    process.close();
+    state = waiting;
+    changed();
+}
+
+bool Task::isRunning()
+{
+    return state == starting || state == running;
 }
 
 void Task::changed()
@@ -41,7 +64,7 @@ void Task::onProcessErrorOutput()
 {
     QByteArray ba = process.readAllStandardError();
     standardStr = QString(ba);
-    qDebug() << "==Error=="<< errorStr;
+    qDebug() << "==Error=="<< standardStr;
     state = running;
     changed();
 
@@ -50,10 +73,11 @@ void Task::onProcessErrorOutput()
 void Task::onProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
     qInfo() << "Process finished exitCode=" << exitCode << " exitStatus=" << exitStatus;
-    if (exitStatus==QProcess::NormalExit)
+    if (exitStatus==QProcess::NormalExit && exitCode == 0)
     {
         fileUrl  = host->getResultUrl(outFile);
         state = finished;
+        host->runNextTask();
     }
     else
     {

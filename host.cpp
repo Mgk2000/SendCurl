@@ -18,6 +18,28 @@ void Host::addTask(QFileInfo *fi, bool run)
         this->startTask(tasks.count() -1);
 }
 
+void Host::runNextTask()
+{
+    for (int i=0; i< tasks.count(); i++)
+        if (tasks[i]->state == waiting)
+        {
+            startTask(i);
+            return;
+        }
+}
+
+bool Host::removeTask(Task *task)
+{
+    for (int i =0; i< tasks.count(); i++)
+        if (tasks[i] == task)
+        {
+            tasks[i]->stop();
+            tasks.removeAt(i);
+            return true;
+        }
+    return false;
+}
+
 CurlHost::CurlHost(MainWindow* mw, const QString &_name, const QString& _url) : Host(mw, _name), url(_url)
 {
 
@@ -32,6 +54,11 @@ void CurlHost::startTask(int itask)
        dir = dir.replace('/', '\\');
        QStringList arguments;
 //       arguments << "--verbose";
+       if (mainWin->sendViaTor())
+       {
+       arguments << "--socks5-hostname";
+        arguments << "localhost:9150";
+       }
        arguments << "-F";
        arguments << QString("file=@%1").arg(dir+'\\'+fi->fileName());
        arguments << "--output";
@@ -53,7 +80,12 @@ QString CurlHost::getResultUrl(const QString &resFile)
     QString json_string;
     json_string = file_text.readAll();
     f.close();
-    QByteArray json_bytes = json_string.toLocal8Bit();
+    return getUrlFromAnswer(json_string);
+}
+
+QString CurlHost::getUrlFromAnswer(const QString &s)
+{
+    QByteArray json_bytes = s.toLocal8Bit();
     auto json_doc = QJsonDocument::fromJson(json_bytes);
 
     if (json_doc.isNull()) {
@@ -77,6 +109,22 @@ QString CurlHost::getResultUrl(const QString &resFile)
     else
         res = json_obj["msg"].toString();
     return res;
+
 }
 
 
+
+QString TusHost::getUrlFromAnswer(const QString &s)
+{
+    int ind1 = s.indexOf('\"', 0);
+    ind1 = s.indexOf('\"', ind1+1);
+    ind1 = s.indexOf('\"', ind1+1);
+    int ind2 = s.indexOf('\"', ind1+1);
+    return "https://tusfiles.com/" + s.mid(ind1+1, ind2-ind1-1);
+
+}
+
+QString SolidHost::getUrlFromAnswer(const QString &s)
+{
+    return "https://solidfiles.com/v/" + s;
+}

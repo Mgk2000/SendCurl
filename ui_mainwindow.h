@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QMainWindow>
@@ -30,6 +31,7 @@ public:
     QGridLayout *gridLayout;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *bottomLayout;
+    QCheckBox *torCheckBox;
     QSpacerItem *horizontalSpacer;
     QPushButton *addButton;
     QMenuBar *menubar;
@@ -48,6 +50,11 @@ public:
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         bottomLayout = new QHBoxLayout();
         bottomLayout->setObjectName(QString::fromUtf8("bottomLayout"));
+        torCheckBox = new QCheckBox(centralwidget);
+        torCheckBox->setObjectName(QString::fromUtf8("torCheckBox"));
+
+        bottomLayout->addWidget(torCheckBox);
+
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         bottomLayout->addItem(horizontalSpacer);
@@ -80,6 +87,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
+        torCheckBox->setText(QCoreApplication::translate("MainWindow", "via Tor", nullptr));
         addButton->setText(QCoreApplication::translate("MainWindow", "Add...", nullptr));
     } // retranslateUi
 

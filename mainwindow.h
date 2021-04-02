@@ -31,9 +31,11 @@ public:
     QList <QFileInfo*> files;
     QList <Task*> taskList;
     void fillTaskList();
+    void removeTask(int itask);
     void addFiles();
     void showFiles();
     void showTasks();
+    bool sendViaTor() const;
     QString lastDir;
 
 private slots:

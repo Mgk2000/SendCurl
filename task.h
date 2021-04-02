@@ -16,9 +16,11 @@ public:
     virtual ~Task() {}
     Host * host;
     void run();
+    void stop();
     QFileInfo * finfo;
     QProcess process;
     TaskState state;
+    bool isRunning();
     void changed();
     QString standardStr, errorStr;
     QString outFile;
