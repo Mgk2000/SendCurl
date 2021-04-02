@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     hosts.append(new TusHost(this,"tusfiles", "https://wwcloud.tusfiles.com/cgi-bin/upload.cgi"));
 //    hosts.append(new CurlHost(this,"1fichier", "https://api.1fichier.com/v1/upload/get_upload_server.cgi"));
     hosts.append(new SolidHost(this,"solidfiles", "https://www.solidfiles.com/upload/process/0/"));
-    hosts.append(new CurlHost(this, "iobb", "http://intel.iobb.net/upload.cgi"));
+    //hosts.append(new CurlHost(this, "iobb", "http://intel.iobb.net/upload.cgi"));
 
 }
 
