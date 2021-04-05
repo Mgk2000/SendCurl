@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QClipboard>
+#include <QApplication>
 
 TaskTable::TaskTable(MainWindow *mw): mainWin(mw)
 {
@@ -35,11 +37,14 @@ void TaskTable::contextMenu(int row, const QPoint &pos)
     QAction stopAct("Stop");
     QAction startAct("Start");
     QAction removeAct("Remove");
+    QAction copyAct("Copy Url");
     Task * task = mainWin->taskList[row];
     if (task->isRunning())
         menu.addAction(&stopAct);
     else
         menu.addAction(&startAct);
+    if (task->state == finished)
+        menu.addAction(&copyAct);
     menu.addAction(&removeAct);
     QAction * act = menu.exec(mapToGlobal(pos));
     if (act == &stopAct)
@@ -48,6 +53,8 @@ void TaskTable::contextMenu(int row, const QPoint &pos)
         task->run();
     else if (act == &removeAct)
         mainWin->removeTask(row);
+    else if (act == &copyAct)
+        QApplication::clipboard()->setText(task->fileUrl);
 }
 
 TaskModel *TaskTable::taskModel()

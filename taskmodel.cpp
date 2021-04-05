@@ -69,7 +69,7 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         case TaskState::failed:
             return QColor(Qt::red);
         case TaskState::finished:
-            return QColor(Qt::green);
+            return QColor(Qt::darkGreen);
         }
    }
 

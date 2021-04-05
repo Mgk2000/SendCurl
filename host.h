@@ -51,5 +51,13 @@ public:
 
     virtual QString getUrlFromAnswer(const QString & s);
 };
+class PutreHost : public CurlHost
+{
+public:
+    PutreHost(MainWindow* mw, const QString& _name, const QString& _url) : CurlHost(mw, _name, _url) {}
+    virtual ~PutreHost(){}
+
+    virtual QString getUrlFromAnswer(const QString & s);
+};
 
 #endif // HOST_H

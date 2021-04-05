@@ -128,3 +128,32 @@ QString SolidHost::getUrlFromAnswer(const QString &s)
 {
     return "https://solidfiles.com/v/" + s;
 }
+
+QString PutreHost::getUrlFromAnswer(const QString &s)
+{
+    QByteArray json_bytes = s.toLocal8Bit();
+    auto json_doc = QJsonDocument::fromJson(json_bytes);
+
+    if (json_doc.isNull()) {
+         qDebug() << "Failed to create JSON doc." ;
+         return "";
+     }
+    if (!json_doc.isObject()) {
+         qDebug()  << "JSON is not an object.";
+         return "";
+     }
+
+    QJsonObject json_obj = json_doc.object();
+
+    if (json_obj.isEmpty()) {
+         qDebug()  << "JSON object is empty.";
+         return "";}
+    bool status = json_obj["status"].toString() =="success";
+    QString res;
+    if (status)
+        res = json_obj["data"].toObject()["link"].toString();
+    else
+        res = json_obj["message"].toString();
+    return res;
+
+}
