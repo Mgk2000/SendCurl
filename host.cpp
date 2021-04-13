@@ -4,7 +4,9 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include "mainwindow.h"
-
+#include <QClipboard>
+#include <QApplication>
+#include <QDir>
 Host::Host(MainWindow* mw, const QString &_name) : name(_name), mainWin(mw)
 {
 
@@ -59,12 +61,35 @@ void CurlHost::startTask(int itask)
        arguments << "--socks5-hostname";
         arguments << "localhost:9150";
        }
+       /*
        arguments << "-F";
-       arguments << QString("file=@%1").arg(dir+'\\'+fi->fileName());
+       arguments << QString("file=@\"%1\"").arg(dir+'\\'+fi->fileName());
        arguments << "--output";
-       task->outFile = dir + "\\" + fi->fileName() +"_" + name + ".json";
+       task->outFile = "\"" + dir + "\\" + fi->fileName() +"_" + name + ".json\"";
+       task->outFile =  dir + "\\" + fi->fileName() +"_" + name + ".json";
+
        arguments <<  task->outFile;
        arguments << url;
+       QString cmd = mainWin->curl;
+       for (int i=0; i< arguments.count(); i++)
+           cmd += " " + arguments[i];
+       QApplication::clipboard()->setText(cmd);
+//       task->process.start(cmd);
+*/
+       QDir::setCurrent(dir);
+       arguments << "-F";
+       arguments << QString("file=@\"%1\"").arg(fi->fileName());
+       arguments << "--output";
+       task->outFile = fi->fileName() +"_" + name + ".json";
+
+       arguments <<  task->outFile;
+       arguments << url;
+       QString cmd = mainWin->curl;
+       for (int i=0; i< arguments.count(); i++)
+           cmd += " " + arguments[i];
+       QApplication::clipboard()->setText(cmd);
+//       task->process.start(cmd);
+
        task->process.start(mainWin->curl, arguments);
 //       task->process.startDetached(mainWin->curl, arguments);
        qDebug() << task->process.state();
