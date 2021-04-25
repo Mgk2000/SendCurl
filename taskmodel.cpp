@@ -35,7 +35,12 @@ QVariant TaskModel::data(const QModelIndex &index, int role) const
         switch (c)
         {
         case 0:
-            return task->host->name;
+        {
+            QString hs = task->host->name;
+            if (task->viaTor)
+                hs = hs +" T";
+            return hs;
+        }
         case 1:
             return task->finfo->fileName();
         case 2:

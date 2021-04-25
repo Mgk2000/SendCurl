@@ -91,6 +91,7 @@ void CurlHost::startTask(int itask)
 //       task->process.start(cmd);
 
        task->process.start(mainWin->curl, arguments);
+       task->viaTor = mainWin->sendViaTor();
 //       task->process.startDetached(mainWin->curl, arguments);
        qDebug() << task->process.state();
 

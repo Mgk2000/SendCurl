@@ -25,6 +25,7 @@ public:
     QString standardStr, errorStr;
     QString outFile;
     QString fileUrl;
+    bool viaTor;
 private slots:
 
     void onProcessStandardOutput();
